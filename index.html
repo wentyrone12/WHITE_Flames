@@ -141,7 +141,7 @@ button:hover{
 
 <!-- HEARTBEAT SOUND -->
 <audio id="heartbeat" loop>
-  <source src="https://www.soundjay.com/heartbeat/sounds/heartbeat-01.mp3" type="audio/mpeg">
+  <source src="loading sound effects.mp3" type="audio/mpeg">
 </audio>
 
 <div class="container">
@@ -219,7 +219,7 @@ function checkLove(){
   loading.style.display = "block";
 
   // 🔊 START HEARTBEAT SOUND
-  heartbeat.currentTime = 0;
+  heartbeat.currentTime = 1;
   heartbeat.play();
 
   setTimeout(()=>{
