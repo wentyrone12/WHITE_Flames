@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>💖 Love Compatibility</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Poppins, sans-serif;
+}
+
+body{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background: linear-gradient(135deg,#ff9a9e,#fad0c4);
+  overflow:hidden;
+}
+
+/* floating hearts */
+.heart{
+  position:absolute;
+  color:white;
+  font-size:20px;
+  animation:float 6s linear infinite;
+  opacity:0.6;
+}
+
+@keyframes float{
+  0%{transform:translateY(100vh) scale(0.5); opacity:0;}
+  50%{opacity:1;}
+  100%{transform:translateY(-10vh) scale(1.2); opacity:0;}
+}
+
+.container{
+  width:90%;
+  max-width:380px;
+  background:rgba(255,255,255,0.25);
+  backdrop-filter: blur(15px);
+  border-radius:20px;
+  padding:25px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+  text-align:center;
+  z-index:2;
+}
+
+h1{
+  color:#bf2020;
+  margin-bottom:10px;
+  font-size:22px;
+}
+
+p{
+  color:#bf2020;
+  font-size:13px;
+  margin-bottom:15px;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:none;
+  border-radius:12px;
+  outline:none;
+  text-align:center;
+  font-size:14px;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:#ff4d6d;
+  color:white;
+  font-size:15px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+button:hover{
+  transform:scale(1.05);
+  background:#ff2e55;
+}
+
+.result{
+  margin-top:15px;
+  font-size:18px;
+  color:rgb(133, 51, 51);
+  font-weight:600;
+  opacity:0;
+  transform:translateY(10px);
+  transition:0.5s;
+}
+
+.result.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.emoji{
+  font-size:30px;
+  margin-top:10px;
+}
+
+.loading{
+  margin-top:10px;
+  color:#ff4242;
+  font-size:14px;
+  display:none;
+}
+
+.dots::after{
+  content:"";
+  animation:dots 1.2s infinite;
+}
+.nametag{
+    position:absolute;
+    bottom:40px;
+    font-size:12px;
+    color:gray;
+}
+
+@keyframes dots{
+  0%{content:"."}
+  33%{content:".."}
+  66%{content:"..."}
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEARTBEAT SOUND -->
+<audio id="heartbeat" loop>
+  <source src="https://www.soundjay.com/heartbeat/sounds/heartbeat-01.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container">
+  <h1>💖 FLAMES 💖</h1>
+  <p style="font-size: 9px; color:red;">FRIENDS, LOVERS, AFFECTIONATE, MARRIAGE, ENEMIES</p>
+  <p>Enter two names and see your destiny ✨</p>
+
+  <input type="text" id="name1" placeholder="Your name 💕">
+  <input type="text" id="name2" placeholder="Crush name 💘">
+
+  <button onclick="checkLove()">Check Compatibility</button>
+
+  <div class="loading" id="loading">Calculating love<span class="dots"></span></div>
+
+  <div class="result" id="result"></div>
+  <div class="emoji" id="emoji"></div>
+</div>
+
+<div class="nametag">Made by Wenxyz</div>
+
+<script>
+
+// floating hearts
+function createHeart(){
+  const heart = document.createElement("div");
+  heart.classList.add("heart");
+  heart.innerHTML = "💖,✨,💍","💍","✨";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.fontSize = (10 + Math.random()*20) + "px";
+  heart.style.animationDuration = (4 + Math.random()*4) + "s";
+  document.body.appendChild(heart);
+  setTimeout(()=> heart.remove(), 6000);
+}
+setInterval(createHeart, 500);
+
+// deterministic result storage
+let savedResults = {};
+
+function generateScore(name1, name2){
+  let key = (name1 + "|" + name2).toLowerCase();
+
+  if(savedResults[key]){
+    return savedResults[key];
+  }
+
+  let hash = 0;
+  for(let i=0;i<key.length;i++){
+    hash = (hash * 31 + key.charCodeAt(i)) % 100000;
+  }
+
+  let score = hash % 101;
+
+  savedResults[key] = score;
+  return score;
+}
+
+function checkLove(){
+  const n1 = document.getElementById("name1").value.trim();
+  const n2 = document.getElementById("name2").value.trim();
+
+  if(!n1 || !n2){
+    alert("Please enter both names 💕");
+    return;
+  }
+
+  const loading = document.getElementById("loading");
+  const result = document.getElementById("result");
+  const emoji = document.getElementById("emoji");
+  const heartbeat = document.getElementById("heartbeat");
+
+  result.classList.remove("show");
+  result.innerText = "";
+  emoji.innerText = "";
+
+  loading.style.display = "block";
+
+  // 🔊 START HEARTBEAT SOUND
+  heartbeat.currentTime = 0;
+  heartbeat.play();
+
+  setTimeout(()=>{
+
+    loading.style.display = "none";
+
+    // 🔇 STOP HEARTBEAT SOUND
+    heartbeat.pause();
+
+    let score = generateScore(n1, n2);
+
+    let message = "";
+    let em = "";
+
+    if(score < 50){
+      message = `${n1} ❤️ ${n2} = Enemies...`;
+      em = "😠🙄";
+    }
+    else if(score > 90){
+      message = `${n1} 💕 ${n2} = Marriage...`;
+      em = "💖✨💍";
+    }
+    else if(score > 40){
+      message = `${n1} 💕 ${n2} = Siblings`;
+      em = "💖✨💍";
+    }
+    else if(score > 60){
+      message = `${n1} 💕 ${n2} = Affectionate...`;
+      em = "💖🤝";
+    }
+    else if(score > 75){
+      message = `${n1} 💫 ${n2} = Lovers...`;
+      em = "🙂😘💖";
+    }
+    else{
+      message = `${n1} 💔 ${n2} = Friends...`;
+      em = "🥺💔";
+    }
+
+    result.innerText = `${message} (${score}%)`;
+    result.classList.add("show");
+    emoji.innerText = em;
+
+  }, 2000);
+}
+
+</script>
+
+</body>
+</html>
